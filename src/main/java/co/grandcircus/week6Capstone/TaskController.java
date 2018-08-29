@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import co.grandcircus.week6Capstone.dao.TaskDao;
@@ -32,18 +33,21 @@ public class TaskController {
 	}
 
 	@RequestMapping("/show")
-	public ModelAndView task() {
-		List<Task> tasks = dao.findAll();
+	public ModelAndView task(@SessionAttribute(name = "user", required = false) User user) {
+		List<Task> tasks = dao.findAllByUser(user);
 
 		ModelAndView mav = new ModelAndView("task-show", "task", tasks);
 		return mav;
 	}
 
 	@RequestMapping("/task/{id}")
-	public ModelAndView showItems(@PathVariable("id") Task task) {
+	public ModelAndView showItems(@SessionAttribute(name = "user", required = false) User user,
+			@PathVariable("id") Task task) {
+
 		System.out.println(task);
+		System.out.println(user);
 		ModelAndView mav = new ModelAndView("details");
-		mav.addObject("task", dao.findAll());
+		mav.addObject("task", dao.findAllByUser(user));
 		return mav;
 
 	}
@@ -55,16 +59,19 @@ public class TaskController {
 	}
 
 	@PostMapping("/task/submit")
-	public ModelAndView submitTask(Task task) {
+	public ModelAndView submitTask(Task task, @SessionAttribute(name = "user", required = false) User user) {
+		task.setUser(user);
 		dao.save(task);
-		ModelAndView mav = new ModelAndView("redirect:/index");
+
+		System.out.println(user);
+		ModelAndView mav = new ModelAndView("redirect:/show");
 		return mav;
 	}
 
 	@RequestMapping("/task/{id}/delete")
 	public ModelAndView delete(@PathVariable("id") Long id) {
 		dao.deleteById(id);
-		return new ModelAndView("redirect:/index");
+		return new ModelAndView("redirect:/show");
 	}
 
 	// setting up form

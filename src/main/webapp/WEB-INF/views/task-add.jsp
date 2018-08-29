@@ -19,9 +19,10 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="/index"> User Login <span class="sr-only">(current)</span></a>
+    
       <a class="nav-item nav-link" href="/show">Tasks</a>
-      <a class="nav-item nav-link" href="/register-user">Sign-up</a>
+    
+      <a class="nav-item nav-link" href="/logout"> ${user.name}  Log-out</a>
      
     </div>
   </div>
